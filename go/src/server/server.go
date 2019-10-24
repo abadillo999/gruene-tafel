@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"server/Handler"
-	"config/Config"
+	//"server/handler"
+	"config"
 )
 
 type Server struct {

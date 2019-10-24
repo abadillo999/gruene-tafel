@@ -1,3 +1,4 @@
+package cache
 
 type cache struct {
 	ID          string `json:"ID"`

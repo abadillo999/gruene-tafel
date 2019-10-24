@@ -17,7 +17,6 @@ type DBConfig struct {
 	Port     int
 	Username string
 	Password string
-	Name     string
 	Charset  string
 }
 
@@ -26,8 +25,7 @@ type ENVConfig struct {
 	Library string
 }
 
-func newConfig (configPath string) *Config 
-{
+func NewConfig (configPath string) *Config {
 	schemaLoader := gojsonschema.NewStringLoader("{}")
     documentLoader := gojsonschema.NewReferenceLoader(configPath)
 
@@ -35,17 +33,20 @@ func newConfig (configPath string) *Config
     if err != nil {
         panic(err.Error())
     }
-	if result.Valid()
-	{
+	if result.Valid() {
         fmt.Printf("The document is valid\n")
-	}else
-	{
+	} else {
         fmt.Printf("The document is not valid. see errors :\n")
-		for _, desc := range result.Errors() 
-		{
+		for _, desc := range result.Errors() {
             fmt.Printf("- %s\n", desc)
         }
-    }
+	}
+	return &Config{
+		ENV: &ENVConfig{
+			Language:  "python",
+			Library:   "OpenCV",
+		},
+	}
 }
 
 func GetDBConfig() *Config {
@@ -64,7 +65,7 @@ func GetDBConfig() *Config {
 //To be configured via config file i.e. config.json as a configmap
 func GetENVConfig() *Config {
 	return &Config{
-		DB: &ENVConfig{
+		ENV: &ENVConfig{
 			Language:  "python",
 			Library:   "OpenCV",
 		},

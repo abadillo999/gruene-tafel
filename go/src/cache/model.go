@@ -1,10 +1,10 @@
-package model
+package cache
 
 import (
 	"time"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	//"github.com/jinzhu/gorm"
+	//"github.com/jinzhu/gorm/dialects/mysql"
 )
 
 type Task struct {

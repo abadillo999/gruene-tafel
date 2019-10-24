@@ -2,7 +2,7 @@ package server
 
 import (  
 	"fmt"
-	"cache.Cache"
+	"cache"
 )
 
 type handler struct {  

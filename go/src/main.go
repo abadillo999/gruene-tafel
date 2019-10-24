@@ -1,7 +1,7 @@
 package main
 
 import (
-	"C:\Users\EZGONAL\Desktop\gruene-tafel\src\config"
+	//"config"
 	"server"
 )
 
