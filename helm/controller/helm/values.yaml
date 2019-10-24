@@ -1,0 +1,23 @@
+global:
+  registry: badibadi/
+  webapp:
+    enabled: false
+    name: gruene-web-app
+    port: 8080
+  controller:
+    enabled: true
+    name: alejandro-gbadillo-marco-cab-mail-server
+    port: 8081
+  database:
+    enabled: false
+    name: gruene-database
+    service: database-service
+    claim: database-claim
+    port: 3306
+  initContainer:
+    registry: 
+    image: alpine
+usvc:
+  image:
+    name: python
+    tag: latest

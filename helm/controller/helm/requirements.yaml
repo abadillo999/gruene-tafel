@@ -1,0 +1,11 @@
+dependencies:
+  - name: database
+    alias: database
+    version: 0.0.1
+    repository: file://../../database
+    condition: global.database.enabled
+  - name: gruene-tafel-webapp
+    alias: gruene-tafel-webapp
+    version: 0.0.1
+    repository: file://../../webapp/helm
+    condition: global.webapp.enabled

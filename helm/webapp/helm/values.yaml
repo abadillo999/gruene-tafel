@@ -1,0 +1,4 @@
+usvc:
+  image:
+    name: gruene-tafel-webapp
+    tag: 0.0.1

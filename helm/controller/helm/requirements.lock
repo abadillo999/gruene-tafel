@@ -1,0 +1,9 @@
+dependencies:
+- name: database
+  repository: file://../../database
+  version: 0.0.1
+- name: smartest-phones-mail-server
+  repository: file://../../mailserver/helm
+  version: 0.0.1
+digest: sha256:c0c3a55e21ad8f7603cfde86203eaa39257e7b5a0f8440038c2aba8c813d13cf
+generated: 2019-04-23T21:07:23.4795601+02:00
