@@ -8,11 +8,14 @@ import (
 )
 
 type Task struct {
-	gorm.Model
-	Id        string     `json:"id"`
-	Priority  string     `gorm:"type:ENUM('0', '1', '2', '3');default:'0'" json:"priority"`
-	Deadline  *time.Time `gorm:"default:null" json:"deadline"`
-	Done      bool       `json:"done"`
+	id           string               `json:"id"`
+	lang         string               `json:"lang"`
+	langVersion  string               `json:"lang-version"`
+	lib          string               `json:"lib"`
+	libVersion   string               `json:"lib-version"`
+	imageUrls    map[string]string	  `json:"imageUrls"`
+	script       string               `json:"script"`
+	done         bool                 `json:"done"`
 }
 
 func (t *Task) Complete() {

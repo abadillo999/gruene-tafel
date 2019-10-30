@@ -1,13 +1,14 @@
 package server
 
 import (  
-	"fmt"
-	"cache"
+	"processor"
+	"net/http"
+	"github.com/gorilla/mux"
+	"github.com/xeipuuv/gojsonschema"
 )
 
-type handler struct {  
-	port   int
-	_processor processor.processor
+type Handler struct {  
+	_processor *processor.Processor
 }
 
 /*func post(response http.ResponseWriter, request *http.Request) {
@@ -24,14 +25,30 @@ type handler struct {
 	json.NewEncoder(response).Encode(newEvent)
 }*/
 
-func newHandler (processor *processor.processor) {
 
+func NewHandler (processor *processor.Processor) *Handler {
+	return &Handler{
+		_processor: processor,
+	}
 }
 
 
 
 
-func CreateTask(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
+func CreateOrder(response http.ResponseWriter, request *http.Request) {
+	var newOrder order
+	reqBody, err := ioutil.ReadAll(request.Body)
+
+	if err != nil {
+		fmt.Fprintf(w, "Kindly enter data with the event title and description only in order to update")
+	}
+	
+	json.Unmarshal(reqBody, &newOrder)
+	orders = append(orders, newOrder)
+	w.WriteHeader(http.StatusCreated)
+
+
+
 	vars := mux.Vars(r)
 
 	project := getProjectOr404(db, projectTitle, w, r)
@@ -55,7 +72,7 @@ func CreateTask(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusCreated, task)
 }
 
-func GetTask(response http.ResponseWriter, request *http.Request) {
+func GetOrder(response http.ResponseWriter, request *http.Request) {
 	vars := mux.Vars(request)
 
 	taskId := vars["taskId"]
@@ -67,10 +84,10 @@ func GetTask(response http.ResponseWriter, request *http.Request) {
 	respondJSON(w, http.StatusOK, task)
 }
 
-func UpdateTask(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
+func UpdateOder(response http.ResponseWriter, request *http.Request) {
 	vars := mux.Vars(r)
 
-	projectTitle := vars["title"]
+	taskId := vars["taskId"]
 	project := getProjectOr404(db, projectTitle, w, r)
 	if project == nil {
 		return
@@ -84,7 +101,7 @@ func UpdateTask(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&task); err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
+		respondError(response, http.StatusBadRequest, err.Error())
 		return
 	}
 	defer r.Body.Close()
@@ -96,18 +113,11 @@ func UpdateTask(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, task)
 }
 
-func DeleteTask(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
+func DeleteOrder(response http.ResponseWriter, request *http.Request) {
+	vars := mux.Vars(request)
 
-	projectTitle := vars["title"]
-	project := getProjectOr404(db, projectTitle, w, r)
-	if project == nil {
-		return
-	}
-
-	id, _ := strconv.Atoi(vars["id"])
-	task := getTaskOr404(db, id, w, r)
-	if task == nil {
+	id := vars["orderId"]
+	if id == nil {
 		return
 	}
 
@@ -116,60 +126,4 @@ func DeleteTask(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	respondJSON(w, http.StatusNoContent, nil)
-}
-
-func CompleteTask(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-
-	projectTitle := vars["title"]
-	project := getProjectOr404(db, projectTitle, w, r)
-	if project == nil {
-		return
-	}
-
-	id, _ := strconv.Atoi(vars["id"])
-	task := getTaskOr404(db, id, w, r)
-	if task == nil {
-		return
-	}
-
-	task.Complete()
-	if err := db.Save(&task).Error; err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	respondJSON(w, http.StatusOK, task)
-}
-
-func UndoTask(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-
-	projectTitle := vars["title"]
-	project := getProjectOr404(db, projectTitle, w, r)
-	if project == nil {
-		return
-	}
-
-	id, _ := strconv.Atoi(vars["id"])
-	task := getTaskOr404(db, id, w, r)
-	if task == nil {
-		return
-	}
-
-	task.Undo()
-	if err := db.Save(&task).Error; err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	respondJSON(w, http.StatusOK, task)
-}
-
-// getTaskOr404 gets a task instance if exists, or respond the 404 error otherwise
-func getTaskOr404(db *gorm.DB, id int, w http.ResponseWriter, r *http.Request) *model.Task {
-	task := model.Task{}
-	if err := db.First(&task, id).Error; err != nil {
-		respondError(w, http.StatusNotFound, err.Error())
-		return nil
-	}
-	return &task
 }

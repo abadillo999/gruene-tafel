@@ -12,46 +12,41 @@ import (
 
 type Server struct {
 	router *mux.Router
-	_DB     *gorm.DB
+	//_DB     *gorm.DB
 }
 
-func (server *Server) initialize(config *config.Config, processor *processor.Processor) {
+func (server *Server) Initialize(config *config.Config, processor *processor.Processor) {
 	server.router = mux.NewRouter()
 	server.setRouters()
 }
 
-// setRouters sets the all required routers
+
+func (server *Server) Run(port string) {
+	log.Fatal(http.ListenAndServe(port, server.router))
+}
+
+//Private functions
 func (server *Server) setRouters() {
-	// Routing for handlers
 	server.post("/order", a.handleRequest(handler.CreateOrder))
 	server.get("/order/{orderId}", a.handleRequest(handler.GetOrder))
 	server.post("/order/{orderId}", a.handleRequest(handler.UpdateOrder))
 	server.delete("/order/{orderId}", a.handleRequest(handler.DeleteOrder))
 }
 
-// Get wraps the router for GET method
-func (server *Server) Get(path string, f func(w http.ResponseWriter, r *http.Request)) {
+func (server *Server) get(path string, f func(w http.ResponseWriter, r *http.Request)) {
 	server.router.HandleFunc(path, f).Methods("GET")
 }
 
-// Post wraps the router for POST method
-func (server *Server) Post(path string, f func(w http.ResponseWriter, r *http.Request)) {
+func (server *Server) post(path string, f func(w http.ResponseWriter, r *http.Request)) {
 	server.router.HandleFunc(path, f).Methods("POST")
 }
 
-// Put wraps the router for PUT method
-func (server *Server) Put(path string, f func(w http.ResponseWriter, r *http.Request)) {
+func (server *Server) put(path string, f func(w http.ResponseWriter, r *http.Request)) {
 	server.router.HandleFunc(path, f).Methods("PUT")
 }
 
-// Delete wraps the router for DELETE method
-func (server *Server) Delete(path string, f func(w http.ResponseWriter, r *http.Request)) {
+func (server *Server) delete(path string, f func(w http.ResponseWriter, r *http.Request)) {
 	server.router.HandleFunc(path, f).Methods("DELETE")
-}
-
-// Run the server on it's router
-func (server *Server) run(port string) {
-	log.Fatal(http.ListenAndServe(port, server.router))
 }
 
 type RequestHandlerFunction func(w http.ResponseWriter, r *http.Request)

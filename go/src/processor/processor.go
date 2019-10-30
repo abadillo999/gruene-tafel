@@ -2,13 +2,13 @@ package processor
 
 import (
 	"fmt"
-	"config.Config"
+	"config"
 )
 
-type processor struct {
-	config config.Config
+type Processor struct {
+	_config* config.Config
 }
 
-func newProcessor(config *config.Config) {
+func NewProcessor(config *config.Config) {
 		fmt.Printf("processor\n")
 }
