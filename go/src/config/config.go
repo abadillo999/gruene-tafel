@@ -2,72 +2,54 @@ package config
 
 import (
     "fmt"
-    "github.com/xeipuuv/gojsonschema"
+	"encoding/json"
+	"io/ioutil"
 )
 
 type Config struct {
 
-	DB *DBConfig
-	ENV  *ENVConfig
+    DB   *DBConfig      `json:"db_config"`
+	ENV  *ENVConfig     `json:"env_config"`
 }
 
 type DBConfig struct {
-	Dialect  string
-	Host     string
-	Port     int
-	Username string
-	Password string
-	Charset  string
+	Dialect  string   `json:"dialect"`
+	Host     string   `json:"host"`
+	Port     int      `json:"port"`
+	Username string   `json:"username"`
+	Password string   `json:"password"`
+	Charset  string   `json:"charset"`
 }
 
 type ENVConfig struct {
-	Language  string
-	Library string
+	Language  string  `json:"language"`
+	Library   string  `json:"library"`
 }
 
 func NewConfig (configPath string) *Config {
-	schemaLoader := gojsonschema.NewStringLoader("{}")
-    documentLoader := gojsonschema.NewReferenceLoader(configPath)
 
-    result, err := gojsonschema.Validate(schemaLoader, documentLoader)
-    if err != nil {
+	file, err := ioutil.ReadFile(configPath)
+	if err != nil {
+		fmt.Println("Error opening config file.")
         panic(err.Error())
     }
-	if result.Valid() {
-        fmt.Printf("The document is valid\n")
-	} else {
-        fmt.Printf("The document is not valid. see errors :\n")
-		for _, desc := range result.Errors() {
-            fmt.Printf("- %s\n", desc)
-        }
+
+	config := Config{}
+	err = json.Unmarshal([]byte(file), &config)
+
+	if err != nil {
+		fmt.Println("Couldn't read config file.")
+        panic(err)
 	}
-	return &Config{
-		ENV: &ENVConfig{
-			Language:  "python",
-			Library:   "OpenCV",
-		},
-	}
+	fmt.Println("Config file read.")
+
+	return &config
 }
 
-func GetDBConfig() *Config {
-	return &Config{
-		DB: &DBConfig{
-			Dialect:  "mysql",
-			Host:     "database-service",
-			Port:     3306,
-			Username: "user",
-			Password: "green",
-			Charset:  "utf8",
-		},
-	}
+func (config *Config) GetDBConfig() *DBConfig {
+	return config.DB
 }
 
-//To be configured via config file i.e. config.json as a configmap
-func GetENVConfig() *Config {
-	return &Config{
-		ENV: &ENVConfig{
-			Language:  "python",
-			Library:   "OpenCV",
-		},
-	}
+func (config *Config) GetENVConfig() *ENVConfig {
+	return config.ENV
 }

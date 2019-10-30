@@ -13,7 +13,7 @@ type Task struct {
 	langVersion  string               `json:"lang-version"`
 	lib          string               `json:"lib"`
 	libVersion   string               `json:"lib-version"`
-	imageUrls    map[string]string	  `json:"imageUrls"`
+	//TODO: imageUrls    map[string]string	  `json:"imageUrls"`
 	script       string               `json:"script"`
 	done         bool                 `json:"done"`
 }

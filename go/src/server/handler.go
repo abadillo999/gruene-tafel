@@ -3,8 +3,10 @@ package server
 import (  
 	"processor"
 	"net/http"
-	"github.com/gorilla/mux"
-	"github.com/xeipuuv/gojsonschema"
+	//"io/ioutil"
+	"encoding/json"
+	//"github.com/gorilla/mux"
+	//"github.com/xeipuuv/gojsonschema"
 )
 
 type Handler struct {  
@@ -35,12 +37,11 @@ func NewHandler (processor *processor.Processor) *Handler {
 
 
 
-func CreateOrder(response http.ResponseWriter, request *http.Request) {
-	var newOrder order
-	reqBody, err := ioutil.ReadAll(request.Body)
+func (handler *Handler) CreateOrder(response http.ResponseWriter, request *http.Request) {
 
+	/*reqBody, err := ioutil.ReadAll(request.Body)
 	if err != nil {
-		fmt.Fprintf(w, "Kindly enter data with the event title and description only in order to update")
+		http.Error(response, "Error reading request body", http.StatusInternalServerError)
 	}
 	
 	json.Unmarshal(reqBody, &newOrder)
@@ -69,11 +70,18 @@ func CreateOrder(response http.ResponseWriter, request *http.Request) {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondJSON(w, http.StatusCreated, task)
+	*/
+	jsonBody, err := json.Marshal("\"taskId\":\"whateva\"")
+	if err != nil {
+		http.Error(response, "Error converting results to json",
+			http.StatusInternalServerError)
+	}
+	response.Write(jsonBody)
+
 }
 
-func GetOrder(response http.ResponseWriter, request *http.Request) {
-	vars := mux.Vars(request)
+func (handler *Handler) GetOrder(response http.ResponseWriter, request *http.Request) {
+	/*vars := mux.Vars(request)
 
 	taskId := vars["taskId"]
 
@@ -81,11 +89,11 @@ func GetOrder(response http.ResponseWriter, request *http.Request) {
 	if task == nil {
 		return
 	}
-	respondJSON(w, http.StatusOK, task)
+	respondJSON(w, http.StatusOK, task)*/
 }
 
-func UpdateOder(response http.ResponseWriter, request *http.Request) {
-	vars := mux.Vars(r)
+func (handler *Handler) UpdateOrder(response http.ResponseWriter, request *http.Request) {
+	/*vars := mux.Vars(r)
 
 	taskId := vars["taskId"]
 	project := getProjectOr404(db, projectTitle, w, r)
@@ -110,11 +118,11 @@ func UpdateOder(response http.ResponseWriter, request *http.Request) {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondJSON(w, http.StatusOK, task)
+	respondJSON(w, http.StatusOK, task)*/
 }
 
-func DeleteOrder(response http.ResponseWriter, request *http.Request) {
-	vars := mux.Vars(request)
+func (handler *Handler) DeleteOrder(response http.ResponseWriter, request *http.Request) {
+	/*vars := mux.Vars(request)
 
 	id := vars["orderId"]
 	if id == nil {
@@ -125,5 +133,5 @@ func DeleteOrder(response http.ResponseWriter, request *http.Request) {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondJSON(w, http.StatusNoContent, nil)
+	respondJSON(w, http.StatusNoContent, nil)*/
 }

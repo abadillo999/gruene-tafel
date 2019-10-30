@@ -6,31 +6,34 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	//"server/handler"
 	"config"
+	"processor"
 )
 
 type Server struct {
 	router *mux.Router
-	//_DB     *gorm.DB
+	handler *Handler
 }
 
-func (server *Server) Initialize(config *config.Config, processor *processor.Processor) {
+func NewServer (config *config.Config, processor *processor.Processor) *Server {
+	server := Server{}
 	server.router = mux.NewRouter()
-	server.setRouters()
+	return &server
 }
 
 
 func (server *Server) Run(port string) {
+	server.setRouters()
+	fmt.Println("Listen and serve...")
 	log.Fatal(http.ListenAndServe(port, server.router))
 }
 
 //Private functions
 func (server *Server) setRouters() {
-	server.post("/order", a.handleRequest(handler.CreateOrder))
-	server.get("/order/{orderId}", a.handleRequest(handler.GetOrder))
-	server.post("/order/{orderId}", a.handleRequest(handler.UpdateOrder))
-	server.delete("/order/{orderId}", a.handleRequest(handler.DeleteOrder))
+	server.post("/order", server.handleRequest(server.handler.CreateOrder))
+	server.get("/order/{orderId}", server.handleRequest(server.handler.GetOrder))
+	server.post("/order/{orderId}", server.handleRequest(server.handler.UpdateOrder))
+	server.delete("/order/{orderId}", server.handleRequest(server.handler.DeleteOrder))
 }
 
 func (server *Server) get(path string, f func(w http.ResponseWriter, r *http.Request)) {

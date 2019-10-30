@@ -1,0 +1,16 @@
+{
+    "db_config":
+    {
+        "dialect": "mysql",
+        "host": "database-service",
+        "port": 3306,
+        "username": "user",
+        "password": "green",
+        "charset": "utf8"
+    },
+    "env_config":
+    {
+        "language":"python",
+        "library": "openCV"
+    }
+}
