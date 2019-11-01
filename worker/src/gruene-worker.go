@@ -19,6 +19,6 @@ func main() {
 
 	processor := processor.NewProcessor(config.GetENVConfig())
 
-	server := server.NewServer(config, processor)
-	server.Run(":3000")
+	server := server.NewServer(config.GetServerConfig(), processor)
+	server.Run()
 }

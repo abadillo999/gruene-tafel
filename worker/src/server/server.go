@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-
 	"github.com/gorilla/mux"
 	"config"
 	"processor"
@@ -13,19 +12,24 @@ import (
 type Server struct {
 	router *mux.Router
 	handler *Handler
+	config  *config.ServerConfig
 }
 
-func NewServer (config *config.Config, processor *processor.Processor) *Server {
+func NewServer (config *config.ServerConfig, processor *processor.Processor) *Server {
 	server := Server{}
+	server.config = config
 	server.router = mux.NewRouter()
+	server.handler = &Handler{
+		processor: processor,
+	}
 	return &server
 }
 
 
-func (server *Server) Run(port string) {
+func (server *Server) Run() {
 	server.setRouters()
-	fmt.Println("Listen and serve...")
-	log.Fatal(http.ListenAndServe(port, server.router))
+	fmt.Println("Listen and serve on port" + server.config.Port)
+	log.Fatal(http.ListenAndServe(server.config.Port, server.router))
 }
 
 //Private functions

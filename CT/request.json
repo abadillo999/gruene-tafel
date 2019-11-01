@@ -1,0 +1,16 @@
+{
+    "id":"",
+    "client-id":"user1",
+    "lang": "python",
+    "lang-version":"3.3.3",
+    "lib": "OpenCV",
+    "lib-version": "1.2.2",
+    "image-urls": [
+        {
+            "url": "http:",
+            "id" : "image1"
+        }
+    ],
+    "script": "<base64encoded>",
+    "done": ""
+}

@@ -1,0 +1,90 @@
+openapi: 0.0.1
+
+paths:
+  /task:
+    post:
+      summary: Create a task.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-task'
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/task-created'
+        '400':
+          description: The specified parameters are invalid.
+
+  /task/{taskId}:
+    post:
+      summary: Update task.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create-task'
+      responses:
+        '200':
+          description: Updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/task-created'
+        '400':
+          description: The specified parameters are invalid.
+---
+components:
+  schemas:
+    create-task:
+      type: object
+      required:
+      - client-id
+      - lang
+      - lang-version
+      - lib
+      - lib-version
+      - image-urls
+      - script
+      additionalProperties: false
+      properties:
+        client-id:
+          type: string
+        lang:
+          type: string
+        lang-version:
+          type: string
+        lib:
+          type: string
+        lib-version:
+          type: string
+        image-urls:
+          type: array
+          additionalProperties: false
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+              id:
+                type: string
+          required:
+          - url
+          - id
+        script:
+          type: string
+          description: Should be base64 encoded.
+
+    task-created:
+      type: object
+      required:
+      - id
+      additionalProperties: false
+      properties:
+        id:
+          type: string

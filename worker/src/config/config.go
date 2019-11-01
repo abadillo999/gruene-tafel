@@ -8,8 +8,9 @@ import (
 
 type Config struct {
 
-    DB   *DBConfig      `json:"db_config"`
-	ENV  *ENVConfig     `json:"env_config"`
+    DB     *DBConfig      `json:"db_config"`
+	ENV    *ENVConfig     `json:"env_config"`
+	Server *ServerConfig  `json:"server_config"`
 }
 
 type DBConfig struct {
@@ -24,6 +25,10 @@ type DBConfig struct {
 type ENVConfig struct {
 	Language  string  `json:"language"`
 	Library   string  `json:"library"`
+}
+
+type ServerConfig struct {
+	Port  string  `json:"port"`
 }
 
 func NewConfig (configPath string) *Config {
@@ -48,6 +53,9 @@ func NewConfig (configPath string) *Config {
 
 func (config *Config) GetDBConfig() *DBConfig {
 	return config.DB
+}
+func (config *Config) GetServerConfig() *ServerConfig {
+	return config.Server
 }
 
 func (config *Config) GetENVConfig() *ENVConfig {

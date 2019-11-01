@@ -12,5 +12,9 @@
     {
         "language":"python",
         "library": "openCV"
+    },
+    "server_config":
+    {
+        "port":":3000"
     }
 }

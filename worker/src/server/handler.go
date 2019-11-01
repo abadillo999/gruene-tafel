@@ -1,16 +1,18 @@
 package server
 
-import (  
+import (
 	"processor"
 	"net/http"
-	//"io/ioutil"
+	"model"
+	"io/ioutil"
 	"encoding/json"
+	"fmt"
 	//"github.com/gorilla/mux"
 	//"github.com/xeipuuv/gojsonschema"
 )
 
-type Handler struct {  
-	_processor *processor.Processor
+type Handler struct {
+	processor *processor.Processor
 }
 
 /*func post(response http.ResponseWriter, request *http.Request) {
@@ -28,9 +30,9 @@ type Handler struct {
 }*/
 
 
-func NewHandler (processor *processor.Processor) *Handler {
+func NewHandler (_processor *processor.Processor) *Handler {
 	return &Handler{
-		_processor: processor,
+		processor: _processor,
 	}
 }
 
@@ -39,44 +41,37 @@ func NewHandler (processor *processor.Processor) *Handler {
 
 func (handler *Handler) CreateOrder(response http.ResponseWriter, request *http.Request) {
 
-	/*reqBody, err := ioutil.ReadAll(request.Body)
+	reqBody, err := ioutil.ReadAll(request.Body)
 	if err != nil {
-		http.Error(response, "Error reading request body", http.StatusInternalServerError)
+		http.Error(response, "Error reading request body", http.StatusNotAcceptable)
+	}
+
+	var newTask model.Task
+	
+    if err := json.Unmarshal(reqBody, &newTask); err != nil {
+		fmt.Println(err.Error())
+		http.Error(response, "Error decoding json body", http.StatusBadRequest)
+	}
+
+
+	status := handler.processor.CheckRequest(&newTask) 
+
+
+	if !status{
+		http.Error(response, "Error checking request parameters", http.StatusBadRequest)
 	}
 	
-	json.Unmarshal(reqBody, &newOrder)
-	orders = append(orders, newOrder)
-	w.WriteHeader(http.StatusCreated)
 
-
-
-	vars := mux.Vars(r)
-
-	project := getProjectOr404(db, projectTitle, w, r)
-	if project == nil {
-		return
-	}
-
-	task := model.Task{ProjectID: project.ID}
-
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&task); err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	defer r.Body.Close()
-
-	if err := db.Save(&task).Error; err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	*/
-	jsonBody, err := json.Marshal("\"taskId\":\"whateva\"")
+	responseJson, err := json.Marshal(newTask)
 	if err != nil {
-		http.Error(response, "Error converting results to json",
-			http.StatusInternalServerError)
+		http.Error(response, "Error converting results to json", http.StatusInternalServerError)
 	}
-	response.Write(jsonBody)
+
+	response.Header().Set("Content-Type", "application/json")
+	response.WriteHeader(http.StatusCreated)
+	response.Write(responseJson)
+
+	//response.WriteHeader(http.StatusCreated)
 
 }
 
