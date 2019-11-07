@@ -28,7 +28,7 @@ type ENVConfig struct {
 }
 
 type ServerConfig struct {
-	Port  string  `json:"port"`
+	Port string  `json:"port"`
 }
 
 func NewConfig (configPath string) *Config {

@@ -16,13 +16,11 @@ type Server struct {
 }
 
 func NewServer (config *config.ServerConfig, processor *processor.Processor) *Server {
-	server := Server{}
-	server.config = config
-	server.router = mux.NewRouter()
-	server.handler = &Handler{
-		processor: processor,
-	}
-	return &server
+	_server := Server{}
+	_server.config = config
+	_server.router = mux.NewRouter()
+	_server.handler = NewHandler(processor)
+	return &_server
 }
 
 
@@ -34,10 +32,10 @@ func (server *Server) Run() {
 
 //Private functions
 func (server *Server) setRouters() {
-	server.post("/order", server.handleRequest(server.handler.CreateOrder))
-	server.get("/order/{orderId}", server.handleRequest(server.handler.GetOrder))
-	server.post("/order/{orderId}", server.handleRequest(server.handler.UpdateOrder))
-	server.delete("/order/{orderId}", server.handleRequest(server.handler.DeleteOrder))
+	server.post("/task", server.handleRequest(server.handler.CreateTask))
+	server.get("/task/{taskId}", server.handleRequest(server.handler.GetTask))
+	server.post("/task/{taskId}", server.handleRequest(server.handler.UpdateTask))
+	server.delete("/task/{taskId}", server.handleRequest(server.handler.DeleteTask))
 }
 
 func (server *Server) get(path string, f func(w http.ResponseWriter, r *http.Request)) {

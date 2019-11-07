@@ -8,59 +8,71 @@ import (
 	"encoding/json"
 	"fmt"
 	//"github.com/gorilla/mux"
-	//"github.com/xeipuuv/gojsonschema"
+	"github.com/xeipuuv/gojsonschema"
 )
 
 type Handler struct {
 	processor *processor.Processor
+	schema *gojsonschema.Schema
 }
 
-/*func post(response http.ResponseWriter, request *http.Request) {
-	var newEvent event
-	reqBody, err := ioutil.ReadAll(r.Body)
+func NewHandler (processor *processor.Processor) *Handler {
+	loader := gojsonschema.NewStringLoader(model.TaskSchema)
+	// call the target function
+	_schema, err := gojsonschema.NewSchema(loader)
 	if err != nil {
-		fmt.Fprintf(w, "Kindly enter data with the event title and description only in order to update")
-	}
-	
-	json.Unmarshal(reqBody, &newEvent)
-	events = append(events, newEvent)
-	w.WriteHeader(http.StatusCreated)
-
-	json.NewEncoder(response).Encode(newEvent)
-}*/
-
-
-func NewHandler (_processor *processor.Processor) *Handler {
+		fmt.Println("Error processing schema file %s", err.Error())
+        panic(err.Error())
+    }
 	return &Handler{
-		processor: _processor,
+		processor: processor,
+		schema: _schema,
 	}
 }
 
-
-
-
-func (handler *Handler) CreateOrder(response http.ResponseWriter, request *http.Request) {
+func (handler *Handler) CreateTask(response http.ResponseWriter, request *http.Request) {
 
 	reqBody, err := ioutil.ReadAll(request.Body)
 	if err != nil {
 		http.Error(response, "Error reading request body", http.StatusNotAcceptable)
+		return
 	}
 
+	//schema validation
+    documentLoader := gojsonschema.NewBytesLoader([]byte(reqBody))
+
+    result, err := handler.schema.Validate(documentLoader)
+    if err != nil {
+		http.Error(response, err.Error(), http.StatusBadRequest)
+		return
+    }
+
+	if result.Valid(){
+        fmt.Printf("Valid request received.\n")
+	}else {
+		fmt.Printf("The document is not valid. see errors :\n")
+		var errors string
+		for _, desc := range result.Errors() {
+			errors = ( errors + desc.String())
+			fmt.Printf("- %s\n", desc)
+        }
+		http.Error(response, errors, http.StatusBadRequest)
+		return
+	}
+
+	//Task creation
 	var newTask model.Task
-	
+
     if err := json.Unmarshal(reqBody, &newTask); err != nil {
 		fmt.Println(err.Error())
 		http.Error(response, "Error decoding json body", http.StatusBadRequest)
 	}
 
-
 	status := handler.processor.CheckRequest(&newTask) 
-
 
 	if !status{
 		http.Error(response, "Error checking request parameters", http.StatusBadRequest)
 	}
-	
 
 	responseJson, err := json.Marshal(newTask)
 	if err != nil {
@@ -70,12 +82,9 @@ func (handler *Handler) CreateOrder(response http.ResponseWriter, request *http.
 	response.Header().Set("Content-Type", "application/json")
 	response.WriteHeader(http.StatusCreated)
 	response.Write(responseJson)
-
-	//response.WriteHeader(http.StatusCreated)
-
 }
 
-func (handler *Handler) GetOrder(response http.ResponseWriter, request *http.Request) {
+func (handler *Handler) GetTask(response http.ResponseWriter, request *http.Request) {
 	/*vars := mux.Vars(request)
 
 	taskId := vars["taskId"]
@@ -87,7 +96,7 @@ func (handler *Handler) GetOrder(response http.ResponseWriter, request *http.Req
 	respondJSON(w, http.StatusOK, task)*/
 }
 
-func (handler *Handler) UpdateOrder(response http.ResponseWriter, request *http.Request) {
+func (handler *Handler) UpdateTask(response http.ResponseWriter, request *http.Request) {
 	/*vars := mux.Vars(r)
 
 	taskId := vars["taskId"]
@@ -116,7 +125,7 @@ func (handler *Handler) UpdateOrder(response http.ResponseWriter, request *http.
 	respondJSON(w, http.StatusOK, task)*/
 }
 
-func (handler *Handler) DeleteOrder(response http.ResponseWriter, request *http.Request) {
+func (handler *Handler) DeleteTask(response http.ResponseWriter, request *http.Request) {
 	/*vars := mux.Vars(request)
 
 	id := vars["orderId"]

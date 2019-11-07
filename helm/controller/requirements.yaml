@@ -1,0 +1,11 @@
+dependencies:
+  - name: database
+    alias: database
+    version: 0.0.1
+    repository: file://../database
+    condition: global.database.enabled
+  - name: gruene-tafel-worker
+    alias: gruene-tafel-worker
+    version: 0.0.1
+    repository: file://../worker
+    condition: global.worker.enabled

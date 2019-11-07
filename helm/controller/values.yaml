@@ -1,0 +1,28 @@
+global:
+  registry: badibadi/
+  controller:
+    enabled: true
+    name: gruene-controller
+    port: 8081
+  webapp:
+    enabled: false
+    name: gruene-web-app
+    port: 8080
+  database:
+    enabled: true
+    name: gruene-database
+    service: database-service
+    claim: database-claim
+    port: 3306
+  worker:
+    enabled: true
+    name: gruene-worker
+    service: worker-service
+    port: 8080
+  initContainer:
+    image: alpine
+    tag: edge
+usvc:
+  image:
+    name: alpine
+    tag: edge

@@ -1,0 +1,4 @@
+usvc:
+  image:
+    name: alpine
+    tag: edge

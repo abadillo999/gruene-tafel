@@ -1,15 +1,31 @@
 #!/bin/bash
 
+DEPLOYMENT_NAME="gruene-taffel-deployment"
 NAMESPACE="gruene_taffel"
 IMAGE_REPOSITORY="dockerhub.com/badibadi"
 
 _help() {
 cat << EOF
 Usage: ${0##*/} <args>
-    -h, --help             Display help
-    -d, --deploy           Deploy
-    -c, --clean            Clean up namespace 
+    -h, --help             Display help.
+    -d, --deploy           Deploy.
+    -c, --clean            Clean up namespace. 
 EOF
+}
+
+_clean() {
+    echo "CLEANING DEPLOYMENT\n"
+    helm delete --purge ${DEPLOYMENT_NAME}
+}
+
+_deploy() {
+    echo "HELM DEPENDENCY UPDATE\n"
+    helm dep update helm/controller
+    [ $? -ne 0 ] && echo "Ops! Something went wrong..." && exit 1
+
+    echo "HELM DEPLOY\n"
+    helm install helm/controller --name ${DEPLOYMENT_NAME}
+    [ $? -ne 0 ] && echo "Ops! Something went wrong..." && _clean && exit 1
 }
 
 main() {    
@@ -41,19 +57,15 @@ main() {
 
     if [[ -n "$deploy" ]];
     then
-        echo "HELM DEPENDENCY UPDATE\n"
-        #helm dep update master/helm
-        git status
-        echo "HELM DEPLOY\n"
-        git status
+        _deploy
     fi
 
     if [[ -n "$clean" ]];
     then
-        helm 
+        _clean
     fi
 
-    popd
 }
 
+[ $# -eq 0 ] && echo "No args, no party, try ${0##*/} -h"
 main "$@"

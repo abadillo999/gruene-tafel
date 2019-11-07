@@ -1,4 +1,0 @@
-apiVersion: v1
-description: Web application "Gruene tafel"
-name: gruene-tafel-webapp
-version: 0.0.1
