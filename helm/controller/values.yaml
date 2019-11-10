@@ -1,5 +1,4 @@
 global:
-  registry: badibadi/
   controller:
     enabled: true
     name: gruene-controller

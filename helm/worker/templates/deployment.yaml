@@ -13,18 +13,21 @@ spec:
       labels:
         app: {{ .Values.global.worker.name }}
     spec:
-         containers:
-         - name: {{ .Values.global.worker.name }}
-           image: {{ .Values.usvc.image.name }}:{{ .Values.usvc.image.tag }}
-           ports:
-           - containerPort: {{ .Values.global.worker.port }}
-          imagePullPolicy: IfNotPresent
-          workDir: /
-          command: [ "/bin/sleep", "36525d" ]
-          volumeMounts:
-          - name: test-suite-volume
-            mountPath: /test-suite
-
+        containers:
+          - name: {{ .Values.global.worker.name }}
+            image: {{ .Values.usvc.image.name }}:{{ .Values.usvc.image.tag }}
+            imagePullPolicy: IfNotPresent
+            ports:
+            - containerPort: {{ .Values.global.worker.port }}
+            workDir: /
+            command: [ "/bin/sleep", "36525d" ]
+            volumeMounts:
+            - name: config-volume
+              mountPath: /etc/worker-config.json
+        volumes:
+          - name: config-volume
+            configMap:
+              name: python-opencv-config
 ---
 kind: Service
 apiVersion: v1

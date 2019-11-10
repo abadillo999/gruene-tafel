@@ -1,0 +1,26 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: python-opencv-config
+data:
+  worker-config.json: |
+    {
+      "db_config":
+      {
+          "dialect": "mysql",
+          "host": "database-service",
+          "port": 3306,
+          "username": "user",
+          "password": "green",
+          "charset": "utf8"
+      },
+      "env_config":
+      {
+          "language":"python",
+          "library": "openCV"
+      },
+      "server_config":
+      {
+          "port": ":3000"
+      }
+    }

@@ -21,16 +21,18 @@ spec:
           command: ["sh","-c"]
           args:
             - sleep 10;
-              until nslookup {{ .Values.global.mailserver_name }}-service;
+              until nslookup {{ .Values.global.database.service }};
               do sleep 2;
               done;
-              nc -w 1 -z {{ .Values.global.mailserver_name }}-service {{ .Values.global.mailserver_port }}
+              nc -w 1 -z {{ .Values.global.database.service }} {{ .Values.global.database.port }}
         containers:
         - name: {{ .Values.global.controller.name }}
           image: {{ .Values.global.registry }}{{ .Values.usvc.image.name }}:{{ .Values.usvc.image.tag }}
           imagePullPolicy: IfNotPresent
           ports:
-          - containerPort: {{ .Values.global.controller.port }}  
+          - containerPort: {{ .Values.global.controller.port }}
+          workDir: /
+          command: [ "/bin/sleep", "36525d" ]
 
 ---    
 kind: Service
