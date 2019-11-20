@@ -2,26 +2,59 @@ global:
   controller:
     enabled: true
     name: gruene-controller
-    port: 8081
+    port: 3323
   webapp:
     enabled: false
     name: gruene-web-app
     port: 8080
-  database:
-    enabled: true
-    name: gruene-database
-    service: database-service
-    claim: database-claim
-    port: 3306
-  worker:
-    enabled: true
-    name: gruene-worker
-    service: worker-service
-    port: 8080
+
   initContainer:
     image: alpine
     tag: edge
-usvc:
-  image:
-    name: alpine
-    tag: edge
+
+#####
+## Workers configuration
+#####
+default-worker:
+  enabled: true
+  usvc:
+    name: default-worker
+    service: default-worker-service
+    port: 8080
+
+opencv-python-worker:
+  enabled: true
+  usvc:
+    name: opencv-python-worker
+    service: opencv-python-worker-service
+    port: 8080
+
+#####
+## Database configuration
+#####
+database:
+  enabled: true
+  usvc:
+    name: gruene-database
+    service: database-service
+    user: user
+    password: green
+    db_name: gruene_tafel_db
+    claim: database-claim
+    port: 3306
+  
+#####
+## Deployment configuration
+#####
+ct:
+  enabled: true
+  usvc:
+    image:
+      name: ct_pytest
+      tag: 0.0.1
+webapp:
+  enabled: false
+  usvc:
+    name: gruene-web-app
+    service: web-app-service
+    port: 8080

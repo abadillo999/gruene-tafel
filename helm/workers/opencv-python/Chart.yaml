@@ -1,0 +1,4 @@
+apiVersion: v1
+description: OpenCV python worker.
+name: opencv-python-worker
+version: 0.0.1

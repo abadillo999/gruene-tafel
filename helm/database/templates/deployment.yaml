@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: {{ .Values.global.database.name }}
+    name: {{ .Values.usvc.name }}
     labels:
-       app: {{ .Values.global.database.name }}
+       app: {{ .Values.usvc.name }}
 spec:
   selector:
     matchLabels:
-      app: {{ .Values.global.database.name }}
+      app: {{ .Values.usvc.name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.global.database.name }}
+        app: {{ .Values.usvc.name }}
     spec:
          containers:
-         - name: {{ .Values.global.database.name }}
+         - name: {{ .Values.usvc.name }}
            image: {{ .Values.usvc.image.name }}:{{ .Values.usvc.image.tag }}
            ports:
-           - containerPort: {{ .Values.global.database.port }}
+           - containerPort: {{ .Values.usvc.port }}
            env:
            - name: "MYSQL_ROOT_PASSWORD"
              value:  {{quote .Values.usvc.password}}
@@ -32,21 +32,21 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ .Values.global.database.service }}
+  name: {{ .Values.usvc.service }}
 spec:
   selector:
-    app: {{ .Values.global.database.name }}
+    app: {{ .Values.usvc.name }}
   ports:
   - protocol: TCP
-    port: {{ .Values.global.database.port }}
+    port: {{ .Values.usvc.port }}
 
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Values.global.database.claim }}
+  name: {{ .Values.usvc.claim }}
   labels:
-    app:  {{ .Values.global.database.name }}
+    app:  {{ .Values.usvc.name }}
 spec:
   accessModes:
     - ReadWriteOnce

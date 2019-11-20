@@ -1,7 +1,7 @@
 #!/bin/bash
 
-DEPLOYMENT_NAME="gruene-taffel-deployment"
-NAMESPACE="gruene_taffel"
+DEPLOYMENT_NAME="gruene-tafel-deployment"
+NAMESPACE="gruene_tafel"
 IMAGE_REPOSITORY="dockerhub.com/badibadi"
 
 _help() {
@@ -67,5 +67,5 @@ main() {
 
 }
 
-[ $# -eq 0 ] && echo "No args, no party, try ${0##*/} -h"
+[ $# -eq 0 ] && echo "No args, no party. Try ${0##*/} -h"
 main "$@"

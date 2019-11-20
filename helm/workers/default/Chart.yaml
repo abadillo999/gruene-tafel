@@ -1,4 +1,4 @@
 apiVersion: v1
 description: Default worker.
-name: gruene-tafel-worker
+name: default-worker
 version: 0.0.1

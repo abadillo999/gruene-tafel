@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: {{ .Values.global.controller.name }}-deployment
+    name: {{ .Values.global.controller.name }}
     labels:
        app: {{ .Values.global.controller.name }}
 spec:
@@ -21,18 +21,27 @@ spec:
           command: ["sh","-c"]
           args:
             - sleep 10;
-              until nslookup {{ .Values.global.database.service }};
+              until nslookup {{ .Values.database.usvc.service }};
               do sleep 2;
               done;
-              nc -w 1 -z {{ .Values.global.database.service }} {{ .Values.global.database.port }}
+              nc -w 1 -z {{ .Values.database.usvc.service }} {{ .Values.database.usvc.port }}
         containers:
         - name: {{ .Values.global.controller.name }}
-          image: {{ .Values.global.registry }}{{ .Values.usvc.image.name }}:{{ .Values.usvc.image.tag }}
+          image: {{ .Values.global.registry }}{{ .Values.ct.usvc.image.name }}:{{ .Values.ct.usvc.image.tag }}
           imagePullPolicy: IfNotPresent
           ports:
           - containerPort: {{ .Values.global.controller.port }}
           workDir: /
           command: [ "/bin/sleep", "36525d" ]
+          volumeMounts:
+            - name: test-volume
+              mountPath: /test
+        volumes:
+        - name: test-volume
+          hostPath:
+            path: ./
+            type: Directory
+---
 
 ---    
 kind: Service

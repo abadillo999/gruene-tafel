@@ -1,11 +1,16 @@
 dependencies:
-  - name: database
+  - name: database-my-sql
     alias: database
     version: 0.0.1
     repository: file://../database
-    condition: global.database.enabled
-  - name: gruene-tafel-worker
-    alias: gruene-tafel-worker
+    condition: database.enabled
+  - name: default-worker
+    alias: default-worker
     version: 0.0.1
-    repository: file://../worker
-    condition: global.worker.enabled
+    repository: file://../workers/default
+    condition: default-worker.enabled
+  - name: opencv-python-worker
+    alias: opencv-python-worker
+    version: 0.0.1
+    repository: file://../workers/opencv-python
+    condition: opencv-python-worker.enabled
