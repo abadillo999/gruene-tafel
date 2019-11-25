@@ -7,8 +7,7 @@ class http_client:
 
     def __init__(self, url, port):
         self.http_connection = http.client.HTTPConnection(url, port)
-        yield
-        self.http_connection.close()
+
 
     def post(self, uri, headers, data):
         self.http_connection.request('POST', uri, data, headers)
@@ -30,9 +29,9 @@ class worker_client:
     def start(self, url, port):
         self.client = http_client(url, port)
 
-    def create(self, clientid, data):
+    def create(self, clientId, data):
         #TODO: Add clientId to data
-        json_data = json.dumps(data, clientid=clientId)
+        json_data = json.dumps(data)
         return self.client.post("/task", self.headers, json_data )
 
     def update(self, clientId, data):

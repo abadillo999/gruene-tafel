@@ -22,34 +22,8 @@ spec:
            - name: "MYSQL_ROOT_PASSWORD"
              value:  {{quote .Values.usvc.password}}
            - name: "MYSQL_DATABASE"
-             value:  {{quote .Values.usvc.db_name}}
+             value:  {{quote .Values.usvc.name}}
            - name: "MYSQL_USER"
              value:  {{quote .Values.usvc.user}}
            - name: "MYSQL_PASSWORD"
              value:  {{quote .Values.usvc.password}}
-
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: {{ .Values.usvc.service }}
-spec:
-  selector:
-    app: {{ .Values.usvc.name }}
-  ports:
-  - protocol: TCP
-    port: {{ .Values.usvc.port }}
-
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ .Values.usvc.claim }}
-  labels:
-    app:  {{ .Values.usvc.name }}
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 2Gi

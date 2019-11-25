@@ -1,4 +1,0 @@
-apiVersion: v1
-description: Web application and controller.
-name: gruene-tafel-controller
-version: 0.0.1

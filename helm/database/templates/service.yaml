@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Values.usvc.service }}
+spec:
+  selector:
+    app: {{ .Values.usvc.name }}
+  ports:
+  - protocol: TCP
+    port: {{ .Values.usvc.port }}

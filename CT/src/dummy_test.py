@@ -6,5 +6,5 @@ def test_uno(default_worker):
     request = {"name":"dummy"}
     response = default_worker.create(clientId, request)
 
-    assert response == 200
+    assert response.code == 400
 

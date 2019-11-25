@@ -1,0 +1,63 @@
+#####
+## Global configuration
+#####
+global:
+  registry:
+  deployment:
+    name: gruene-tefel-master
+  initContainer:
+    image: alpine
+    tag: edge
+
+#####
+## Master configuration
+#####
+ct:
+  enabled: true
+  usvc:
+    name: testing
+    image:
+      name: ct_pytest
+      tag: 0.0.1
+    hostpath:
+webapp:
+  enabled: false
+  usvc:
+    name: gruene-web-app
+    image:
+      name: alpine
+      tag: edge
+    service: web-app-service
+    port: 8080
+
+#####
+## Database configuration
+#####
+database:
+  enabled: true
+  persistency: 
+    enabled: false
+  usvc:
+    name: gruene-database
+    service: database-service
+    user: user
+    password: gruene
+    claim: database-claim
+    port: 3306
+
+#####
+## Workers' configuration
+#####
+default-worker:
+  enabled: true
+  usvc:
+    name: default-worker
+    service: default-worker-service
+    port: 8080
+
+opencv-python-worker:
+  enabled: true
+  usvc:
+    name: opencv-python-worker
+    service: opencv-python-worker-service
+    port: 8080

@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: {{ .Values.global.deployment.name }}
+    labels:
+       app: {{ .Values.global.deployment.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.global.deployment.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.global.deployment.name }}
+    spec:
+        initContainers:
+        - name: {{ .Values.global.deployment.name }}-init
+          image: {{ .Values.global.initContainer.registry}}{{ .Values.global.initContainer.image }} 
+          imagePullPolicy: IfNotPresent
+          command: ["sh","-c"]
+          args:
+            - sleep 10;
+              until nslookup {{ .Values.database.usvc.service }};
+              do sleep 2;
+              done;
+              nc -w 1 -z {{ .Values.database.usvc.service }} {{ .Values.database.usvc.port }}
+        containers:
+{{- if .Values.ct.enabled }}
+        - name: {{ .Values.ct.usvc.name }}
+          image: {{ .Values.global.registry }}{{ .Values.ct.usvc.image.name }}:{{ .Values.ct.usvc.image.tag }}
+          imagePullPolicy: IfNotPresent
+          workDir: /
+          command: [ "/bin/sleep", "36525d" ]
+          volumeMounts:
+            - name: test-volume
+              mountPath: /test
+{{- end }}
+{{- if .Values.webapp.enabled }}
+        - name: {{ .Values.webapp.usvc.name }}
+          image: {{ .Values.global.registry }}{{ .Values.webapp.usvc.image.name }}:{{ .Values.webapp.usvc.image.tag }}
+          imagePullPolicy: IfNotPresent
+          ports:
+          - containerPort: {{ .Values.webapp.usvc.port }}
+          workDir: /
+          command: [ "/bin/sleep", "36525d" ]
+          volumeMounts:
+            - name: config
+              mountPath: /app
+{{- end }}
+        volumes:
+{{- if .Values.ct.enabled }}
+        - name: test-volume
+          hostPath:
+            path: {{ quote .Values.ct.usvc.hostpath }}
+            type: Directory
+{{- end }}
+{{- if .Values.webapp.enabled }}
+        - name: test-volume
+          configMap:
+            name: {{ .Values.webapp.usvc.configmap }}
+{{- end }}

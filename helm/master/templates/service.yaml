@@ -1,0 +1,14 @@
+{{- if .Values.webapp.enabled }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Values.webapp.usvc.service }}
+spec:
+  type: NodePort
+  selector:
+    app: {{ .Values.webapp.usvc.name }}
+  ports:
+  - protocol: TCP
+    port: {{ .Values.webapp.usvc.port }}
+{{- end }}
+
