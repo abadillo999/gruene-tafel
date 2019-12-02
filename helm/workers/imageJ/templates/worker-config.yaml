@@ -1,0 +1,26 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: imagej-config
+data:
+  worker-config.json: |
+    {
+      "db_config":
+      {
+          "dialect": "mysql",
+          "host": "database-service",
+          "port": 3306,
+          "username": "user",
+          "password": "green",
+          "charset": "utf8"
+      },
+      "env_config":
+      {
+          "language":"java",
+          "library": "imageJ"
+      },
+      "server_config":
+      {
+          "port": ":8080"
+      }
+    }

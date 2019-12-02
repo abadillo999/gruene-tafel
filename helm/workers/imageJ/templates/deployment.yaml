@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: {{ .Values.usvc.name }}
+    labels:
+       app: {{ .Values.usvc.name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.usvc.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.usvc.name }}
+    spec:
+        containers:
+          - name: {{ .Values.usvc.name }}
+            image: {{ .Values.usvc.image.name }}:{{ .Values.usvc.image.tag }}
+            imagePullPolicy: IfNotPresent
+            ports:
+            - containerPort: {{ .Values.usvc.port }}
+            command: ["./gruene-worker", "--config", "/app/config/worker-config.json" ]
+            volumeMounts:
+            - name: config-volume
+              mountPath: /app/config
+        volumes:
+          - name: config-volume
+            configMap:
+              name: imagej-config
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Values.usvc.service }}
+spec:
+  selector:
+    app: {{ .Values.usvc.name }}
+  ports:
+  - protocol: TCP
+    port: {{ .Values.usvc.port }}

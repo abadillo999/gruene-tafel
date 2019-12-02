@@ -14,3 +14,8 @@ dependencies:
     version: 0.0.1
     repository: file://../workers/opencv-python
     condition: opencv-python-worker.enabled
+  - name: imagej-worker
+    alias: imagej-worker
+    version: 0.0.1
+    repository: file://../workers/imageJ
+    condition: imagej-worker.enabled

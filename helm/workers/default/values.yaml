@@ -1,4 +1,4 @@
 usvc:
   image:
-    name: gruene-worker
+    name: default-worker
     tag: 0.0.1

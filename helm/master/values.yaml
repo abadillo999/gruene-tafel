@@ -4,7 +4,7 @@
 global:
   registry:
   deployment:
-    name: gruene-tefel-master
+    name: gruene-tafel-master
   initContainer:
     image: alpine
     tag: edge
@@ -60,4 +60,11 @@ opencv-python-worker:
   usvc:
     name: opencv-python-worker
     service: opencv-python-worker-service
+    port: 8080
+
+imagej-worker:
+  enabled: true
+  usvc:
+    name: imagej-worker
+    service: imagej-service
     port: 8080

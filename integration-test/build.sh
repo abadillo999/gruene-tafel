@@ -24,7 +24,7 @@ _deploy() {
     [ $? -ne 0 ] && echo "Ops! Something went wrong..." && exit 1
 
     echo "HELM DEPLOY\n"
-    helm install helm/master --name $DEPLOYMENT_NAME --set ct.usvc.hostpath=/$PWD/ct/src --debug
+    helm install helm/master --name $DEPLOYMENT_NAME --set ct.usvc.hostpath=/$PWD/integration-test/src --debug
     [ $? -ne 0 ] && echo "Ops! Something went wrong..." && _clean && exit 1
 }
 

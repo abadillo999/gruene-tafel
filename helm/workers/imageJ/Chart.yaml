@@ -1,0 +1,4 @@
+apiVersion: v1
+description: ImageJ worker over ubuntu 14.04 .
+name: imagej-worker
+version: 0.0.1

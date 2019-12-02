@@ -1,0 +1,5 @@
+usvc:
+  image:
+    name: imagej-worker
+    tag: 0.0.1
+    
