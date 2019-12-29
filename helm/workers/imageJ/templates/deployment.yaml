@@ -21,12 +21,22 @@ spec:
             - containerPort: {{ .Values.usvc.port }}
             command: ["./gruene-worker", "--config", "/app/config/worker-config.json" ]
             volumeMounts:
-            - name: config-volume
-              mountPath: /app/config
+              - name: config-volume
+                mountPath: /app/config
+              {{- if .Values.usvc.debug }}
+              - name: test-volume
+                mountPath: /test
+              {{- end }}
         volumes:
           - name: config-volume
             configMap:
               name: imagej-config
+        {{- if .Values.usvc.debug }}
+          - name: test-volume
+            hostPath:
+              path: {{ quote .Values.usvc.hostpath }}
+              type: Directory
+        {{- end }}
 ---
 kind: Service
 apiVersion: v1
